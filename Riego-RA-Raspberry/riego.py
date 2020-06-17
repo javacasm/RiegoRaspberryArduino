@@ -9,7 +9,13 @@ v = '0.1'
 arduinoSerialPort = None
 
 def init(portArduino):
-    arduinoSerialPort == portArduino
+    global arduinoSerialPort
+    arduinoSerialPort = portArduino
+    testArduinoPort()
+    
+def testArduinoPort():
+    global arduinoSerialPort
+    getFullData()
 
 def bombaOn():
     enciendeRele(config.ReleBomba)
@@ -19,11 +25,11 @@ def bombaOff():
     
 def riegoOn():
     for i in config.Sectores:
-        riegonOnSector(i)
+        riegoOnSector(i)
 
 def riegoOff():
     for i in config.Sectores:
-        riegonOffSector(i)
+        riegoOffSector(i)
 
 def riegoOnSector(sectorID):
     if sectorID not in config.Sectores:
@@ -40,16 +46,17 @@ def riegoOffSector(sectorID):
 def enciendeRele(releID):
     global arduinoSerialPort
     if arduinoSerialPort != None:
-        arduinoUtils.sendCommand(config.setReleCommand + str(releID) + config.releOnCommand)
+        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID) + config.releOnCommand, config.TimeoutRespuesta)
     else:
         utils.myLog('arduinoSerialPort == None')
 
 def apagaRele(releID):
     global arduinoSerialPort
     if arduinoSerialPort != None:
-        arduinoUtils.sendCommand(config.setReleCommand + str(releID) + config.releOffCommand)
+        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID) + config.releOffCommand, config.TimeoutRespuesta)
     else:
         utils.myLog('arduinoSerialPort == None')      
 
 def getFullData():
+    global arduinoSerialPort
     arduinoUtils.getDataArduino(arduinoSerialPort,config.TimeoutRespuesta)
