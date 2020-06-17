@@ -20,7 +20,7 @@ import TelegramBase
 import riego
 import arduinoUtils
 
-v = '0.1'
+v = '0.5'
 
 update_id = None
 
