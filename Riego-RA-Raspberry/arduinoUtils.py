@@ -8,7 +8,7 @@ import time
 import config
 import utils
 
-
+v = '0.5'
 
 #-----------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
@@ -65,6 +65,19 @@ def sendCommand(arduinoSerialPort, command,PAUSA):
     getDataArduino(arduinoSerialPort,PAUSA)
 
 
+def readAllData(arduinoSerialPort):
+    codificado = ''
+    while arduinoSerialPort.inWaiting()>0 :  
+        datos = arduinoSerialPort.readline()
+        codificado += datos.decode("utf-8")
+        time.sleep(0.1)
+
+    return codificado
+
+def sendCommand(arduinoSerialPort, command):
+    arduinoSerialPort.write(command + config.endCommand)
+
+
 def getDataArduino(arduinoSerialPort,PAUSA):
     '''
     Funcion para acceso a ARDUINO y obtencion de datos en tiempo real   ---
@@ -83,29 +96,14 @@ def getDataArduino(arduinoSerialPort,PAUSA):
  
     try:
         #enviar comando para que ARDUINO reaccione. El prefijo b (byte) es opcional en python 2.x pero obligatorio en 3.x
-        arduinoSerialPort.write(config.getDataCommand) 
+        sendCommand(config.getDataCommand) 
+        utils.myLog("Sent " + str(config.getDataCommand) + ' command')
         #pausa para que arduino tenga tiempo de reaccionar y dejar la informacion en el puerto Serie
         time.sleep(PAUSA)
         #revisar si hay datos en el puerto serie
-        if (arduinoSerialPort.inWaiting()>0):  
-            #leer una cadena desde el el puerto serie y 'despiojarla'
-            linea_leida_de_Arduino = arduinoSerialPort.readline().strip()
-            linea_leida_de_Arduino = linea_leida_de_Arduino.decode("utf-8")
-            listaObtenidaDelinea = []
-            try:
-                listaObtenidaDelinea = linea_leida_de_Arduino.split(config.separadorDatosArduino)
-                #los datos leidos de arduino son una cadena de texto. La partimos y convertimos a numeros decimales
-                for n in range (len(listaObtenidaDelinea)):
-                    listaObtenidaDelinea[n] = float(listaObtenidaDelinea[n])
-                return  listaObtenidaDelinea #devolvemos los datos (La validez se comprueba en el lugar de llamada)
-            except:
-                print ("\n")
-                print (linea_leida_de_Arduino, listaObtenidaDelinea)
-                print ("\nError durante la adquisicion.\nDatos no validos, pidiendo una nueva muestra")
-                print ("<<  Contactar con el administrador o tecnico de mantenimiento si el problema persiste  >>\n\n")
-                #notificamos el problema de lectura de datos para que se tome otra muestra lo antes posible
-                return None
-    except:
+        datos = readAllData(arduinoSerialPort)
+    except Exception as e:
+        utils.myLog('Error: ' + str(e))
         #si llegamos aqui es que se ha perdido la conexion con Arduino  :(
         print ("\n_______________________________________________")
         if FLAG_buscandoConexion == False:      #primera vez que llegamos aqui
