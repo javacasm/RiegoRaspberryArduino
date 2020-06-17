@@ -2,7 +2,7 @@
 
 # Telegram Bot Authorization Token
 
-TELEGRAM_API_TOKEN = 'YOUT API TOKEN'
+TELEGRAM_API_TOKEN = 'YOUR API TOKEN'
 
 
 ReleBomba = 5
@@ -26,4 +26,4 @@ TimeoutRespuesta = 1
 
 VELOCIDAD_PUERTO_SERIE = 115200
 
-v = '0.5'
+v = '0.75'
