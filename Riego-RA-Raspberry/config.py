@@ -2,24 +2,28 @@
 
 # Telegram Bot Authorization Token
 
-TELEGRAM_API_TOKEN = 'YOUR:OWNTOKEN'
+TELEGRAM_API_TOKEN = 'YOUT API TOKEN'
 
 
 ReleBomba = 5
 
 Sectores = range(1,5)
 
-separadorDatosArduino = ';'
+separadorDatosArduino = b';'
 
-getDataCommand = '#'
+endCommand = b'\n'
 
-setReleCommand = 'S'
+helpCommand = b'h'
 
-releOffCommand = 'L'
-releOnCommand = 'H'
+getDataCommand = b'#'
+
+setReleCommand = b'S'
+
+releOffCommand = b'L'
+releOnCommand = b'H'
 
 TimeoutRespuesta = 1
 
 VELOCIDAD_PUERTO_SERIE = 115200
 
-v = '0.1'
+v = '0.5'
