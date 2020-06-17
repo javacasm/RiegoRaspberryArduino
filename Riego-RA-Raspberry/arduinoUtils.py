@@ -61,21 +61,23 @@ def detectarPuertoArduino():   #version mejorada 2018
 #-----------------------------------------------------------------------------------------  
 
 def sendCommand(arduinoSerialPort, command,PAUSA):
-    arduinoSerialPort.write(command)
-    getDataArduino(arduinoSerialPort,PAUSA)
+    arduinoSerialPort.write(command + config.endCommand)
+    
 
 
 def readAllData(arduinoSerialPort):
     codificado = ''
     while arduinoSerialPort.inWaiting()>0 :  
         datos = arduinoSerialPort.readline()
-        codificado += datos.decode("utf-8")
+        # utils.myLog(str(datos))
+        datosCodificados = datos.decode("utf-8")
+        if datosCodificados[0] != '<':
+            codificado += datosCodificados
         time.sleep(0.1)
 
     return codificado
 
-def sendCommand(arduinoSerialPort, command):
-    arduinoSerialPort.write(command + config.endCommand)
+
 
 
 def getDataArduino(arduinoSerialPort,PAUSA):
@@ -96,12 +98,16 @@ def getDataArduino(arduinoSerialPort,PAUSA):
  
     try:
         #enviar comando para que ARDUINO reaccione. El prefijo b (byte) es opcional en python 2.x pero obligatorio en 3.x
-        sendCommand(config.getDataCommand) 
+        sendCommand(arduinoSerialPort,config.getDataCommand, config.TimeoutRespuesta) 
+
         utils.myLog("Sent " + str(config.getDataCommand) + ' command')
         #pausa para que arduino tenga tiempo de reaccionar y dejar la informacion en el puerto Serie
-        time.sleep(PAUSA)
+        time.sleep( PAUSA)
+
         #revisar si hay datos en el puerto serie
         datos = readAllData(arduinoSerialPort)
+        utils.myLog(datos)
+        return datos
     except Exception as e:
         utils.myLog('Error: ' + str(e))
         #si llegamos aqui es que se ha perdido la conexion con Arduino  :(
