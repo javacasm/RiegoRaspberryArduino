@@ -2,7 +2,7 @@
      Sistema de control de riego
 
      *  Control de rel'es de electrov'alvulas y rel'e bomba de riego
-     *  Medida de condiciones atmosf'ericas: Temperatura, humedad y presi'on
+     *  Medida de condiciones atmosf'ericas: Temperatura, humedad y presi'on usando un sensor BME280
      *  Se muestra el estado en un lcd 20x4
      *  Se env'ia el estado (rel'es y sensores) bajo petici'on por el puerto serie
      *  Se define el array de los pines a los que est'an conectados los N rel'es
