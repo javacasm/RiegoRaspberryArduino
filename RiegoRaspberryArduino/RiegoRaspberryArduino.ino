@@ -1,23 +1,33 @@
 /*
- *   Sistema de control de riego 
- * 
- *   *  Control de rel'es de electrov'alvulas y rel'e bomba de riego
- *   *  Medida de condiciones atmosf'ericas: Temperatura, humedad y presi'on
- *   *  Se muestra el estado en un lcd 
- *   *  Se env'ia el estado bajo petici'on por el puerto serie
- * 
- *   Pensado para que lo controle una Rapsberry Pi
- * 
- *   Licencia CC by SA by @javacasm
- *   
- *   Junio de 2020
- * 
- */
+     Sistema de control de riego
+
+     *  Control de rel'es de electrov'alvulas y rel'e bomba de riego
+     *  Medida de condiciones atmosf'ericas: Temperatura, humedad y presi'on
+     *  Se muestra el estado en un lcd 20x4
+     *  Se env'ia el estado (rel'es y sensores) bajo petici'on por el puerto serie
+     *  Se define el array de los pines a los que est'an conectados los N rel'es
+     *  Se controla si los rel'es son de conexi'on directa o invertida (estado Low los activa)
+
+
+     Pensado para que lo controle una Rapsberry Pi
+
+
+     TODO:
+
+     * Establecer hora desde serie V1.8
+     * Mostrar hora en el LCD      V1.8
+     * Programaci'on  de activaci'on a horarios   V2.0
+
+     Licencia CC by SA by @javacasm
+
+     Junio de 2020
+
+*/
 
 
 // defines
 
-#define VERSION "V:1.3"
+#define VERSION "V:1.6"
 #define SEPARADOR_SERIE ";"
 
 #define PERIODO_LECTURA_SENSORES 5000
@@ -32,9 +42,10 @@
 #define CMD_PIN2STATE 'S'
 #define CMD_PIN_HIGH  'H'
 #define CMD_PIN_LOW   'L'
+#define CMD_SET_SENSOR_PERIOD 'T'
 
-#define CMD_PINSTATE2TEXT(x) x != CMD_PIN_HIGH ? "High" : "Low"
-#define CMD_PINSTATE2BOOL(x) x != CMD_PIN_HIGH ?  HIGH  :  LOW
+#define CMD_PINSTATE2TEXT(x) x == CMD_PIN_HIGH ? "High" : "Low"
+#define CMD_PINSTATE2BOOL(x) x == CMD_PIN_HIGH ?  HIGH  :  LOW
 
 #define mostrarMensaje(x) Serial.println(x); lcd.print(x);
 
@@ -53,10 +64,12 @@ BME280I2C bme;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 #define NReles  5
-int reles[] = {2, 3, 4, 5,6};
+int reles[] = {2, 3, 4, 5, 6};
+bool relesInverted[] = {true, true, true, true, false};
 
 float presion, temperatura, humedad;
 
+long periodoLecturaSensores = PERIODO_LECTURA_SENSORES;
 long tiempoUltimoDato;
 
 void setup() {
@@ -68,9 +81,9 @@ void setup() {
   // Configuracion Serie
   Serial.begin(115200);
 
-  
+
   mostrarMensaje(String(VERSION));
-  lcd.setCursor(0,2);
+  lcd.setCursor(0, 2);
   mostrarMensaje(" @javacasm CC by SA");
 
   // Configuracion Sensor BME280
@@ -79,9 +92,9 @@ void setup() {
     mostrarMensaje(F("Sensor BME no detectado"));
   }
 
-  for( int i = 0; i < NReles; i++){
+  for ( int i = 0; i < NReles; i++) {
     pinMode(reles[i], OUTPUT);
-    digitalWrite(reles[i], HIGH);
+    setReleState(i,LOW);
   }
 
   tiempoUltimoDato = millis();
@@ -92,8 +105,8 @@ void loop() {
   long tiempoActual = millis();
 
   leerPuertoSerie();
-  
-  if (tiempoActual - tiempoUltimoDato > PERIODO_LECTURA_SENSORES ) {
+
+  if (tiempoActual - tiempoUltimoDato > periodoLecturaSensores ) {
     leerSensores();
     mostrarDatosLCD();
     tiempoUltimoDato = tiempoActual;
@@ -101,14 +114,14 @@ void loop() {
 }
 
 
-int leerPuertoSerie(){
+int leerPuertoSerie() {
   int returnValue = CMD_RETURN_ERROR;
-  
+
   if (Serial.available() > 0) {
     char data;
     String command = "";
-    while ( (data = Serial.read() ) != END_OF_COMMAND){
-      if(data != -1 && data != '\r' && data != '\n') // -1 no hay datos, No queremos incluir los finales de linea
+    while ( (data = Serial.read() ) != END_OF_COMMAND) {
+      if (data != -1 && data != '\r' && data != '\n') // -1 no hay datos, No queremos incluir los finales de linea
         command += data;
     }
     returnValue = execCommand(command);
@@ -119,40 +132,56 @@ int leerPuertoSerie(){
 
 
 
-int  changePin2State(String command){
+int setReleState(int indexPin,bool newState){
+   if (relesInverted[indexPin]) newState = !newState;
+     digitalWrite(reles[indexPin], newState);   
+}
+
+int  changePin2State(String command) {
+
   int returnValue = CMD_RETURN_ERROR;
+
   int indexPin = command[1] - '1';
-  if(indexPin < NReles){
+  if ( (indexPin < NReles) && (indexPin >= 0) ) {
     bool newState = CMD_PINSTATE2BOOL(command[2]);
-    digitalWrite(reles[indexPin],newState);
     
-    Serial.print(">> Set ");
-    Serial.print(reles[indexPin]);
+    setReleState(indexPin,newState);
+
+
+    Serial.print(">> Set rele ");
+    Serial.print(command[1]);
     Serial.print(" ");
     Serial.println(CMD_PINSTATE2TEXT(command[2]));
     returnValue = CMD_RETURN_OK;
   }
   else {
-    Serial.print("ERROR: no data for rele ");
+    Serial.print("ERROR: no hay datos conexion del rele ");
     Serial.println(indexPin);
   }
   return returnValue;
 }
 
-int  showHelp(){
+int  showHelp() {
+
   Serial.println("Comandos:");
-  Serial.print(CMD_HELP);
-  Serial.println(" show help");
+  Serial.print("  ");
   Serial.print(CMD_DATA2SERIE);
-  Serial.println(" send data to serial");
+  Serial.println(" envia los datos actuales via serie");
+  Serial.print("  ");
   Serial.print(CMD_PIN2STATE);
-  Serial.println("Xs X:pinID s: H for HIGH, L for LOW");
-  Serial.println("\\n to send command");
+  Serial.print("Xs X:pinID (1-"); Serial.print(NReles); Serial.println(" s: H para HIGH, L para LOW");
+  Serial.print("  ");
+  Serial.print(CMD_SET_SENSOR_PERIOD);
+  Serial.println("N N:0-9 segundos entre medidas de datos. 0 Medida continua");
+  Serial.print("  ");
+  Serial.print(CMD_HELP);
+  Serial.println(" muestra ayuda");
+  Serial.println("  \\n para enviar y ejecutar el comando");
   return CMD_RETURN_OK;
 }
 
 void dumpStringChars(String command) {
-  for(int  i=0; i< command.length(); i++){
+  for (int  i = 0; i < command.length(); i++) {
     Serial.print(int(command[i]));
     Serial.print("-");
     Serial.println(command[i]);
@@ -163,74 +192,102 @@ void dumpStringChars(String command) {
 
 int execCommand(String command) {
   int returnValue = CMD_RETURN_ERROR;
-  switch(command[0]){
+  Serial.print("<< ");
+  Serial.println(command);
+  switch (command[0]) {
     case CMD_DATA2SERIE:
       returnValue = mostrarDatosSerie();
       break;
     case CMD_PIN2STATE:
       returnValue = changePin2State(command);
-      if(returnValue == CMD_RETURN_OK) {
-          mostrarDatosSerie();
-          mostrarDatosLCD();
+      if (returnValue == CMD_RETURN_OK) {
+        mostrarDatosSerie();
+        mostrarDatosLCD();
       }
       break;
     case CMD_HELP:
       returnValue = showHelp();
       break;
+    case CMD_SET_SENSOR_PERIOD:
+      returnValue = changePeriodSensor(command);
+      break;
     default:
       mostrarMensaje(command);
       returnValue = CMD_RETURN_UNKOWN;
       break;
-    
+
   }
   return returnValue;
 }
 
-int  leerSensores(){
-   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
-   BME280::PresUnit presUnit(BME280::PresUnit_Pa);
-   bme.read(presion, temperatura, humedad, tempUnit, presUnit);   
-   return CMD_RETURN_OK;
+int changePeriodSensor(String command) {
+  int returnValue = CMD_RETURN_ERROR;
+  periodoLecturaSensores = (command[1] - '0') * 1000;
+  if (periodoLecturaSensores < 0) periodoLecturaSensores = 0;
+  Serial.print(">> Tsensors = ");
+  Serial.print(periodoLecturaSensores);
+  Serial.print("ms");
+  returnValue = CMD_RETURN_OK;
+  return returnValue;
+
 }
 
-int mostrarDatosSerie(){ 
+int  leerSensores() {
+  BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
+  BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+  bme.read(presion, temperatura, humedad, tempUnit, presUnit);
+  return CMD_RETURN_OK;
+}
+
+int mostrarDatosSerie() {
   Serial.print(temperatura);
   Serial.print(F(SEPARADOR_SERIE));
   Serial.print(int(round(humedad)));
   Serial.print(F(SEPARADOR_SERIE));
   Serial.print(long(presion));
   Serial.print(F(SEPARADOR_SERIE));
-  for(int i = 0; i < NReles; i++){
-    if (!digitalRead(reles[i]))
-        Serial.print("On");
-    else
-        Serial.print("Off");
-    Serial.print(F(SEPARADOR_SERIE));
-  }  
+  for (int i = 0; i < NReles; i++) {
+     Serial.print(getReleStrState(i));
+     Serial.print(F(SEPARADOR_SERIE));
+  }
   Serial.println();
   return CMD_RETURN_OK;
 }
 
-int mostrarDatosLCD(){
-//  lcd.clear();
-  
+int mostrarDatosLCD() {
+  //  lcd.clear();
+
   /* FORMATEO de datos y ENVIO al puerto SERIE */
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print(F("T:"));
   lcd.print(temperatura);
   lcd.print(F("C H:"));
   lcd.print(int(round(humedad)));
   lcd.print(F("%"));
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print(F("P:"));
   lcd.print(long(presion));
-  lcd.print(F("atm"));
-  lcd.setCursor(0,3);
-  for( int i = 0; i < NReles; i++){
-    if (!digitalRead(reles[i]))
-        lcd.print("On  ");
-    else
-        lcd.print("Off ");
+  lcd.print(F(" atm"));
+  lcd.setCursor(0, 3);
+  for ( int i = 0; i < NReles; i++) {
+    lcd.print(getReleStrState(i));
+    lcd.print("  ");
   }
   return CMD_RETURN_OK;
+}
+
+String getReleStrState(int idRele){
+  String strState = "";
+  int releState = getReleState(idRele);
+  if (releState)
+      strState = "On";
+  else
+      strState = "Off";
+  return strState;
+}
+
+int getReleState(int idRele){
+   int pinState = digitalRead(reles[idRele]);
+   if (relesInverted[idRele]) pinState = !pinState;
+   return pinState;
 }
