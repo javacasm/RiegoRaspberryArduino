@@ -6,9 +6,6 @@ import arduinoUtils
 
 v = '0.75'
 
-
-
-
 PAUSA = 0.5
 RESET  = 5
 try:
@@ -20,7 +17,7 @@ try:
     utils.myLog(datos)
 
     # getData
-    arduinoUtils.sendCommand(arduinoSerialPort, config.getDataCommand)
+    arduinoUtils.sendCommand(arduinoSerialPort, config.getDataCommand, PAUSA)
 
     time.sleep(PAUSA)
 
@@ -29,7 +26,7 @@ try:
 
     # Turn On Rele 3
     command = config.setReleCommand + str(3).encode('utf-8') + config.releOnCommand 
-    arduinoUtils.sendCommand(arduinoSerialPort, command)
+    arduinoUtils.sendCommand(arduinoSerialPort, command, PAUSA)
 
     time.sleep(PAUSA)
 
@@ -38,7 +35,7 @@ try:
 
     # Turn On Rele 5
     command = config.setReleCommand + str(5).encode('utf-8') + config.releOnCommand 
-    arduinoUtils.sendCommand(arduinoSerialPort, command)
+    arduinoUtils.sendCommand(arduinoSerialPort, command, PAUSA)
 
     time.sleep(PAUSA)
 
@@ -46,7 +43,7 @@ try:
     utils.myLog(datos)
 
     # getData
-    arduinoUtils.sendCommand(arduinoSerialPort, config.getDataCommand)
+    arduinoUtils.sendCommand(arduinoSerialPort, config.getDataCommand, PAUSA)
 
     time.sleep(PAUSA)
 
