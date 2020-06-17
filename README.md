@@ -29,6 +29,7 @@ Módulo Raspberry
 Programa de control en python:
     * Encendido según horario - V1.0
     * Control vía Telegram - V2.0
+    * MQTT - V2.5
     * Visualización de estadísticas - V3.0
 
 Licencia CC by SA by @javacasm
