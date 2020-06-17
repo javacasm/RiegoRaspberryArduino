@@ -18,6 +18,7 @@ import config
 import utils
 import TelegramBase
 import riego
+import arduinoUtils
 
 v = '0.1'
 
@@ -30,11 +31,23 @@ user_keyboard_markup = ReplyKeyboardMarkup(user_keyboard)
 
 commandList = '/help, /info, /riegoOn, /riegoOff'
 
+
+
+def init():
+    arduinoSerialPort, puertoDetectado = arduinoUtils.detectarPuertoArduino() 
+    if (puertoDetectado != ''):
+        utils.myLog ("\n ** ARDUINO CONECTADO EN " + puertoDetectado + " ** ")
+        if arduinoSerialPort != None:
+            riego.init(arduinoSerialPort)
+        else:
+            utils.myLog("None Arduino Port")
+
 def main():
     """Run the bot."""
     global update_id
     global chat_id
-    global ourClient
+
+    init()
     
     bot = telegram.Bot(config.TELEGRAM_API_TOKEN)
     
@@ -72,7 +85,6 @@ def main():
 def updateBot(bot):
     """Answer the message the user sent."""
     global update_id
-    global ourClient
     global chat_id
     #utils.myLog('Updating telegramBot')
     # Request updates after the last update_id
@@ -101,9 +113,9 @@ def updateBot(bot):
                 sUsers = TelegramBase.getUsersInfo()
                 TelegramBase.send_message (sUsers,chat_id)
             elif comando == '/riegoOn':
-                resultado = riego.riegoOn(ourClient)
+                resultado = riego.riegoOn()
             elif comando == '/riegoOff':
-                resultado = riego.riegoOn(ourClient)
+                resultado = riego.riegoOff()
             else:
                 update.message.reply_text('echobot: '+update.message.text, reply_markup=user_keyboard_markup)                
 
