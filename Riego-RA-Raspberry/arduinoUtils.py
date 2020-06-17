@@ -6,6 +6,8 @@ import sys
 import serial  
 import time
 import config
+import utils
+
 
 
 #-----------------------------------------------------------------------------------------
@@ -76,9 +78,8 @@ def getDataArduino(arduinoSerialPort,PAUSA):
         arduinoSerialPort.flushInput() #eliminar posibles restos de lecturas anteriores
         arduinoSerialPort.flushOutput()#abortar comunicaciones salientes que puedan estar a medias
 
-    except:
-        print ("------------------------------------------------")
-        print ("error borrando datos del puerto Serie de Arduino")
+    except Exception as e :
+        utils.myLog ("Error getDataArduino: " + str(e))
  
     try:
         #enviar comando para que ARDUINO reaccione. El prefijo b (byte) es opcional en python 2.x pero obligatorio en 3.x
@@ -123,7 +124,7 @@ def getDataArduino(arduinoSerialPort,PAUSA):
                 print ("\n")
                 FLAG_buscandoConexion = False
                 print (" ** COMUNICACION REESTABLECIDA en "  + puertoDetectado + " ** \n")
-                print (epochDate(time.time()))
+                print (utils.epochDate(time.time()))
                 print ("_______________________________________________\n\n")
                 break
     print ("Arduino sin datos disponibles")
