@@ -46,17 +46,26 @@ def riegoOffSector(sectorID):
 def enciendeRele(releID):
     global arduinoSerialPort
     if arduinoSerialPort != None:
-        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID) + config.releOnCommand, config.TimeoutRespuesta)
+        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID).encode('utf-8') + config.releOnCommand, config.TimeoutRespuesta)
     else:
         utils.myLog('arduinoSerialPort == None')
 
 def apagaRele(releID):
     global arduinoSerialPort
     if arduinoSerialPort != None:
-        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID) + config.releOffCommand, config.TimeoutRespuesta)
+        arduinoUtils.sendCommand(arduinoSerialPort,config.setReleCommand + str(releID).encode('utf-8') + config.releOffCommand, config.TimeoutRespuesta)
     else:
         utils.myLog('arduinoSerialPort == None')      
 
 def getFullData():
     global arduinoSerialPort
-    arduinoUtils.getDataArduino(arduinoSerialPort,config.TimeoutRespuesta)
+    return arduinoUtils.getDataArduino(arduinoSerialPort,config.TimeoutRespuesta)
+
+def getExplicitData():
+    strData = getFullData()
+    utils.myLog('STRData:' + strData)
+    data = strData.split(config.separadorDatosArduino)
+    strData = ''
+    for d in data:
+        strData += d + '\n'
+    return strData
