@@ -114,8 +114,12 @@ def updateBot(bot):
                 TelegramBase.send_message (sUsers,chat_id)
             elif comando == '/riegoOn':
                 resultado = riego.riegoOn()
+                answer = 'Datos @ ' + utils.getStrDateTime() + '\n==========================\n\n' + riego.getFullData()
+                update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
             elif comando == '/riegoOff':
                 resultado = riego.riegoOff()
+                answer = 'Datos @ ' + utils.getStrDateTime() + '\n==========================\n\n' + riego.getFullData()
+                update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
             else:
                 update.message.reply_text('echobot: '+update.message.text, reply_markup=user_keyboard_markup)                
 
