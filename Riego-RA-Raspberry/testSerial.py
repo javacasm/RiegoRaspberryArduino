@@ -4,7 +4,7 @@ import config
 import utils
 import arduinoUtils
 
-v = '0.5'
+v = '0.75'
 
 
 
