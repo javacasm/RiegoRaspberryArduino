@@ -2,7 +2,8 @@
 
 # Telegram Bot Authorization Token
 
-TELEGRAM_API_TOKEN = TELEGRAM_API_TOKEN_JavaBot
+TELEGRAM_API_TOKEN = 'YOUR:OWNTOKEN'
+
 
 ReleBomba = 5
 
@@ -18,5 +19,7 @@ releOffCommand = 'L'
 releOnCommand = 'H'
 
 TimeoutRespuesta = 1
+
+VELOCIDAD_PUERTO_SERIE = 115200
 
 v = '0.1'
