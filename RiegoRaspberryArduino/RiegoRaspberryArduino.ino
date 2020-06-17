@@ -17,10 +17,10 @@
 
 // defines
 
-#define VERSION "V:0.3"
+#define VERSION "V:1.0"
 #define SEPARADOR_SERIE ";"
 
-#define PERIODO_SENSORES 5000
+#define PERIODO_LECTURA_SENSORES 5000
 
 #define END_OF_COMMAND '\n'
 #define CMD_HELP       'h'
@@ -62,7 +62,7 @@ void setup() {
   Serial.begin(115200);
 
   
-  mostrarMensaje(String(VERSION) + "by @javacasm CC by SA");
+  mostrarMensaje(String(VERSION) + "\n\n @javacasm CC by SA");
 
   // Configuracion Sensor BME280
   Wire.begin();
@@ -84,9 +84,10 @@ void loop() {
 
   leerPuertoSerie();
   
-  if (tiempoActual - tiempoUltimoDato > PERIODO_SENSORES ) {
+  if (tiempoActual - tiempoUltimoDato > PERIODO_LECTURA_SENSORES ) {
     leerSensores();
     mostrarDatosLCD();
+    tiempoUltimoData = tiempoActual;
   }
 }
 
@@ -161,9 +162,9 @@ void mostrarDatosSerie(){
   Serial.print(F(SEPARADOR_SERIE));
   for(int i = 0; i < NReles; i++){
     if (!digitalRead(reles[i]))
-        Serial.print("On;");
+        Serial.print("On");
     else
-        Serial.print("Off;");
+        Serial.print("Off");
     Serial.print(F(SEPARADOR_SERIE));
   }  
   Serial.println();
