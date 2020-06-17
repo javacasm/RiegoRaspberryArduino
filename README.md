@@ -26,8 +26,10 @@ Módulo Arduino
 
 Módulo Raspberry
 
-* Control vía Telegram
-* Visualización de estadísticas
+Programa de control en python:
+    * Encendido según horario - V1.0
+    * Control vía Telegram - V2.0
+    * Visualización de estadísticas - V3.0
 
 Licencia CC by SA by @javacasm
 
