@@ -27,7 +27,7 @@
 
 // defines
 
-#define VERSION "V:1.6"
+#define VERSION "V:1.6.1"
 #define SEPARADOR_SERIE ";"
 
 #define PERIODO_LECTURA_SENSORES 5000
@@ -38,10 +38,11 @@
 
 #define END_OF_COMMAND '\n'
 #define CMD_HELP       'h'
-#define CMD_DATA2SERIE '*'
-#define CMD_PIN2STATE 'S'
-#define CMD_PIN_HIGH  'H'
-#define CMD_PIN_LOW   'L'
+#define CMD_DATA2SERIE '#'
+#define CMD_PIN2STATE  'S'
+#define CMD_WILCARD    '*'
+#define CMD_PIN_HIGH   'H'
+#define CMD_PIN_LOW    'L'
 #define CMD_SET_SENSOR_PERIOD 'T'
 
 #define CMD_PINSTATE2TEXT(x) x == CMD_PIN_HIGH ? "High" : "Low"
@@ -140,36 +141,42 @@ int setReleState(int indexPin,bool newState){
 int  changePin2State(String command) {
 
   int returnValue = CMD_RETURN_ERROR;
-
-  int indexPin = command[1] - '1';
-  if ( (indexPin < NReles) && (indexPin >= 0) ) {
-    bool newState = CMD_PINSTATE2BOOL(command[2]);
-    
-    setReleState(indexPin,newState);
-
-
-    Serial.print(">> Set rele ");
-    Serial.print(command[1]);
-    Serial.print(" ");
+  bool newState = CMD_PINSTATE2BOOL(command[2]);
+  if (command[1] == CMD_WILCARD){
+    for (int i = 0; i < NReles ; i++){
+      setReleState(i,newState);
+    }
+    Serial.print(">> Set all reles ");
     Serial.println(CMD_PINSTATE2TEXT(command[2]));
     returnValue = CMD_RETURN_OK;
-  }
-  else {
-    Serial.print("ERROR: no hay datos conexion del rele ");
-    Serial.println(indexPin);
+  } else {
+  
+    int indexPin = command[1] - '1';
+    if ( (indexPin < NReles) && (indexPin >= 0) ) {
+      setReleState(indexPin,newState);
+      Serial.print(">> Set rele ");
+      Serial.print(command[1]);
+      Serial.print(" ");
+      Serial.println(CMD_PINSTATE2TEXT(command[2]));
+      returnValue = CMD_RETURN_OK;
+    }
+    else {
+      Serial.print("ERROR: no hay datos conexion del rele ");
+      Serial.println(indexPin);
+    }
   }
   return returnValue;
 }
 
 int  showHelp() {
-
+  Serial.println("=============================");
   Serial.println("Comandos:");
   Serial.print("  ");
   Serial.print(CMD_DATA2SERIE);
   Serial.println(" envia los datos actuales via serie");
   Serial.print("  ");
   Serial.print(CMD_PIN2STATE);
-  Serial.print("Xs X:pinID (1-"); Serial.print(NReles); Serial.println(" s: H para HIGH, L para LOW");
+  Serial.print("Xs X:pinID (1-"); Serial.print(NReles); Serial.print(") "); Serial.print(CMD_WILCARD); Serial.println(" para todos s: H para HIGH, L para LOW");
   Serial.print("  ");
   Serial.print(CMD_SET_SENSOR_PERIOD);
   Serial.println("N N:0-9 segundos entre medidas de datos. 0 Medida continua");
@@ -177,6 +184,7 @@ int  showHelp() {
   Serial.print(CMD_HELP);
   Serial.println(" muestra ayuda");
   Serial.println("  \\n para enviar y ejecutar el comando");
+  Serial.println("=============================");
   return CMD_RETURN_OK;
 }
 
@@ -268,10 +276,11 @@ int mostrarDatosLCD() {
   lcd.print(F("P:"));
   lcd.print(long(presion));
   lcd.print(F(" atm"));
-  lcd.setCursor(0, 3);
+  
   for ( int i = 0; i < NReles; i++) {
+    lcd.setCursor(i * 4, 3);
     lcd.print(getReleStrState(i));
-    lcd.print("  ");
+    lcd.print(" ");
   }
   return CMD_RETURN_OK;
 }
