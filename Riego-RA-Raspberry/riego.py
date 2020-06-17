@@ -4,7 +4,7 @@ import arduinoUtils
 import utils
 
 
-v = '0.1'
+v = '0.5'
 
 arduinoSerialPort = None
 
