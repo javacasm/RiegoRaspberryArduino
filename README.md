@@ -17,9 +17,9 @@ Sistema de control de riego
 
 [Código python para Raspberry Pi V0.9](./Riego-RA-Raspberry)
 
-TODO:
+### TODO: Pendiente de próximas versiones
 
-Módulo Arduino
+## Módulo Arduino
 
 * Medida de la temperatura en el interior de las cajas - v1.7
 * Ventilador para refrigeración de las cajas - v2.0
@@ -29,7 +29,7 @@ Módulo Arduino
 * Medida de humedad del suelo -   V3.5 
 
 
-Módulo Raspberry
+## Módulo Raspberry
 
 Programa de control en python:
 * Encendido según horario - V1.0
