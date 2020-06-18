@@ -20,16 +20,16 @@ import TelegramBase
 import riego
 import arduinoUtils
 
-v = '0.75'
+v = '0.9'
 
 update_id = None
 
 # 'keypad' buttons
-user_keyboard = [['/help','/info'],['/riegoOn', '/riegoOff']]
+user_keyboard = [['/help','/info'],['/imagen', '/riegoOn'], [ '/riegoOff' ,'/riegoPalet'],['/riegoMacetones','/riegoMacetas']]
 # user_keyboard_markup = ReplyKeyboardMarkup(user_keyboard, one_time_keyboard=True)
 user_keyboard_markup = ReplyKeyboardMarkup(user_keyboard)
 
-commandList = '/help, /info, /riegoOn, /riegoOff'
+commandList = '/help, /info, /imagen, /riegoOn, /riegoOff, /riegoPalet, /riegoMacetones, /riegoMacetas'
 
 
 
@@ -112,13 +112,18 @@ def updateBot(bot):
             elif comando == '/users':
                 sUsers = TelegramBase.getUsersInfo()
                 TelegramBase.send_message (sUsers,chat_id)
-            elif comando == '/riegoOn':
-                resultado = riego.riegoOn()
+            elif comando.startswith('/riego'):
+                if    comando == '/riegoOff': resultado = riego.riegoOff()
+                elif  comando == '/riegoOn' : resultado = riego.riegoOn()
+                elif  comando == '/riegoPalet' : resultado = riego.riegoOnSector(config.SectorPalet)
+                elif  comando == '/riegoMacetones' : resultado = riego.riegoOnSector(config.SectorMacetones)
+                elif  comando == '/riegoMacetas' : resultado = riego.riegoOnSector(config.SectorMacetas)
+                else  : utils.myLog('Comando: ' + comando + ' no reconocido')                
                 answer = 'Datos @ ' + utils.getStrDateTime() + '\n==========================\n\n' + riego.getFullData()
                 update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
-            elif comando == '/riegoOff':
-                resultado = riego.riegoOff()
-                answer = 'Datos @ ' + utils.getStrDateTime() + '\n==========================\n\n' + riego.getFullData()
+            elif comando == '/imagen':
+                answer = 'No implementada ' + comando
+                utils.myLog(answer)
                 update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
             else:
                 update.message.reply_text('echobot: '+update.message.text, reply_markup=user_keyboard_markup)                
