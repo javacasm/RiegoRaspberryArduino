@@ -4,7 +4,7 @@ import config
 import utils
 import arduinoUtils
 
-v = '0.75'
+v = '0.9'
 
 PAUSA = 0.5
 RESET  = 5
