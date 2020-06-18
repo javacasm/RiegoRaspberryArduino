@@ -27,7 +27,7 @@
 
 // defines
 
-#define VERSION "V:1.6.1"
+#define VERSION "V:1.6.2"
 #define SEPARADOR_SERIE ";"
 
 #define PERIODO_LECTURA_SENSORES 5000
@@ -242,7 +242,7 @@ int changePeriodSensor(String command) {
 
 int  leerSensores() {
   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
-  BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+  BME280::PresUnit presUnit(BME280::PresUnit_atm);
   bme.read(presion, temperatura, humedad, tempUnit, presUnit);
   return CMD_RETURN_OK;
 }
@@ -252,7 +252,7 @@ int mostrarDatosSerie() {
   Serial.print(F(SEPARADOR_SERIE));
   Serial.print(int(round(humedad)));
   Serial.print(F(SEPARADOR_SERIE));
-  Serial.print(long(presion));
+  Serial.print(presion);
   Serial.print(F(SEPARADOR_SERIE));
   for (int i = 0; i < NReles; i++) {
      Serial.print(getReleStrState(i));
@@ -271,11 +271,11 @@ int mostrarDatosLCD() {
   lcd.print(temperatura);
   lcd.print(F("C H:"));
   lcd.print(int(round(humedad)));
-  lcd.print(F("%"));
+  lcd.print(F("%  "));
   lcd.setCursor(0, 1);
   lcd.print(F("P:"));
-  lcd.print(long(presion));
-  lcd.print(F(" atm"));
+  lcd.print(presion);
+  lcd.print(F(" atm  "));
   
   for ( int i = 0; i < NReles; i++) {
     lcd.setCursor(i * 4, 3);
