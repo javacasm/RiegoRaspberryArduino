@@ -8,19 +8,22 @@ Sistema de control de riego
 *  Se envía el estado (relés y sensores) bajo petición por el puerto serie
 *  Se define el array de los pines a los que están conectados los N relés
 *  Se controla si los relés son de conexión directa o invertida (estado Low los activa)
+
 *  Una Rapsberry Pi 3 controla el sistema
 *  Control vía Telegram 
 
 
 
-[Código Arduino V1.6](./RiegoRaspberryArduino/RiegoRaspberryArduino.ino)
+[Código Arduino V1.6.1 (C++)](./RiegoRaspberryArduino/RiegoRaspberryArduino.ino)
+
+[Código python para Raspberry Pi V0.9](./Riego-RA-Raspberry)
 
 TODO:
 
 Módulo Arduino
 
-* Establecer la hora de Arduino desde serie     -       V1.8
-* Mostrar hora en el LCD                       -       V1.8
+* Establecer la hora de Arduino desde serie     -       V2.0
+* Mostrar hora en el LCD                       -       V2.0
 * Programación  de activación a horarios       -       V2.0
 * Medida de humedad del suelo                   -      V3.0  
 
