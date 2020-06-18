@@ -41,3 +41,10 @@ Programa de control en python:
 Licencia CC by SA by @javacasm
 
 Junio de 2020
+
+## Montaje
+
+![Montaje](./images/Prototipo.jpg)
+![Montaje](./images/Montaje2.jpg)
+![Montaje](./images/Montaje.jpg)
+![Montaje](./images/MontajeRele.jpg)
