@@ -8,7 +8,7 @@ import time
 import config
 import utils
 
-v = '0.9'
+v = '0.91'
 
 #-----------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
@@ -63,8 +63,6 @@ def detectarPuertoArduino():   #version mejorada 2018
 def sendCommand(arduinoSerialPort, command,PAUSA):
     arduinoSerialPort.write(command + config.endCommand)
     
-
-
 def readAllData(arduinoSerialPort):
     codificado = ''
     while arduinoSerialPort.inWaiting()>0 :  
@@ -78,6 +76,16 @@ def readAllData(arduinoSerialPort):
     return codificado
 
 
+def resetArduino(arduinoSerialPort):
+    if arduinoSerialPort != None:
+        try:
+            arduinoSerialPort.close()
+        except:
+            pass
+        
+        arduinoSerialPort,puertoDetectado = detectarPuertoArduino() #detactamos automaticamente el puerto
+        if arduinoSerialPort!= None:
+            arduinoSerialPort.close()
 
 
 def getDataArduino(arduinoSerialPort,PAUSA):
