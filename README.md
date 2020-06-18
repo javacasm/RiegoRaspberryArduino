@@ -32,11 +32,11 @@ Módulo Arduino
 Módulo Raspberry
 
 Programa de control en python:
- * Encendido según horario - V1.0
- * Captura de imágenes - V1.5
- * MQTT - V2.5
- * Visualización de estadísticas - V3.0
- * Control de Humedad del suelo - V3.5
+* Encendido según horario - V1.0
+* Captura de imágenes - V1.5
+* MQTT - V2.5
+* Visualización de estadísticas - V3.0
+* Control de Humedad del suelo - V3.5
 
 Licencia CC by SA by @javacasm
 
