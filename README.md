@@ -1,4 +1,4 @@
-# Sistema de Riego con Raspberry y Arduino
+v# Sistema de Riego con Raspberry y Arduino
 
 Sistema de control de riego
 
@@ -22,18 +22,20 @@ TODO:
 
 Módulo Arduino
 
-* Establecer la hora de Arduino desde serie     -       V2.0
-* Mostrar hora en el LCD                       -       V2.0
-* Programación  de activación a horarios       -       V2.0
-* Medida de humedad del suelo                   -      V3.0  
+* Establecer la hora de Arduino desde serie     -       V1.8
+* Mostrar hora en el LCD                       -       V1.8
+* Programación de horarios de activación       -       V2.0
+* Medida de humedad del suelo                   -      V3.5 
 
 
 Módulo Raspberry
 
 Programa de control en python:
     * Encendido según horario - V1.0
+    * Captura de imágenes - V1.5
     * MQTT - V2.5
     * Visualización de estadísticas - V3.0
+    * Control de Humedad del suelo - V3.5
 
 Licencia CC by SA by @javacasm
 
