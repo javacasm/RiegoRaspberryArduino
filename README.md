@@ -8,9 +8,10 @@ Sistema de control de riego
 *  Se envía el estado (relés y sensores) bajo petición por el puerto serie
 *  Se define el array de los pines a los que están conectados los N relés
 *  Se controla si los relés son de conexión directa o invertida (estado Low los activa)
+*  Una Rapsberry Pi 3 controla el sistema
+*  Control vía Telegram 
 
 
-Pensado para que lo controle una Rapsberry Pi
 
 [Código Arduino V1.6](./RiegoRaspberryArduino/RiegoRaspberryArduino.ino)
 
@@ -28,7 +29,6 @@ Módulo Raspberry
 
 Programa de control en python:
     * Encendido según horario - V1.0
-    * Control vía Telegram - V2.0
     * MQTT - V2.5
     * Visualización de estadísticas - V3.0
 
