@@ -4,7 +4,7 @@ import config
 import utils
 import arduinoUtils
 
-v = '0.9'
+v = '0.91'
 
 PAUSA = 0.5
 RESET  = 5
@@ -51,7 +51,7 @@ try:
     utils.myLog(datos)    
 
     # get help
-    arduinoUtils.sendCommand(arduinoSerialPort,config.helpCommand)
+    arduinoUtils.sendCommand(arduinoSerialPort,config.helpCommand, PAUSA)
 
     time.sleep(PAUSA)
 
