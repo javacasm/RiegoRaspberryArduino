@@ -8,7 +8,6 @@ Sistema de control de riego
 *  Se envía el estado (relés y sensores) bajo petición por el puerto serie
 *  Se define el array de los pines a los que están conectados los N relés
 *  Se controla si los relés son de conexión directa o invertida (estado Low los activa)
-
 *  Una Rapsberry Pi 3 controla el sistema
 *  Control vía Telegram 
 
