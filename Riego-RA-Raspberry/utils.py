@@ -3,7 +3,7 @@
 import time
 import datetime
 
-v = '1.1'
+v = '1.2'
 
 class RelojLOCAL:
     '''
@@ -59,3 +59,6 @@ def getStrDateTimeMilis():
 
 def myLog(message):
     print(getStrDateTime()+ " " + message)
+    
+def myDebug(message):
+    myLog("Debug: " + message)
