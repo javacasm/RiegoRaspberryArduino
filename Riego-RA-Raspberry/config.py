@@ -2,9 +2,9 @@
 
 # Telegram Bot Authorization Token
 
-TELEGRAM_API_TOKEN = 'YOUR TELEGRAM API TOKEN'
+TELEGRAM_API_TOKEN = 'YOUR TELEGRAM API KEY'
 
-v = '0.9'
+v = '0.9.5'
 
 
 Sectores = range(1,5)
@@ -32,5 +32,5 @@ releOnCommand = b'H'
 TimeoutRespuesta = 1
 
 VELOCIDAD_PUERTO_SERIE = 115200
-
+ImagesDirectory = './images/'
 
