@@ -19,8 +19,9 @@ import utils
 import TelegramBase
 import riego
 import arduinoUtils
+import camara
 
-v = '0.9'
+v = '0.9.5'
 
 update_id = None
 
@@ -31,9 +32,10 @@ user_keyboard_markup = ReplyKeyboardMarkup(user_keyboard)
 
 commandList = '/help, /info, /imagen, /riegoOn, /riegoOff, /riegoPalet, /riegoMacetones, /riegoMacetas'
 
-
+camera = None
 
 def init():
+    global camera
     arduinoSerialPort, puertoDetectado = arduinoUtils.detectarPuertoArduino() 
     if (puertoDetectado != ''):
         utils.myLog ("\n ** ARDUINO CONECTADO EN " + puertoDetectado + " ** ")
@@ -41,12 +43,13 @@ def init():
             riego.init(arduinoSerialPort)
         else:
             utils.myLog("None Arduino Port")
-
+    camera = camara.initCamera()
+    
 def main():
     """Run the bot."""
     global update_id
     global chat_id
-
+    
     init()
     
     bot = telegram.Bot(config.TELEGRAM_API_TOKEN)
@@ -86,6 +89,8 @@ def updateBot(bot):
     """Answer the message the user sent."""
     global update_id
     global chat_id
+    global camera
+    
     #utils.myLog('Updating telegramBot')
     # Request updates after the last update_id
     for update in bot.get_updates(offset=update_id, timeout=10):
@@ -123,7 +128,11 @@ def updateBot(bot):
                 update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
             elif comando == '/imagen':
                 answer = 'No implementada ' + comando
-                utils.myLog(answer)
+                if camera != None:
+                    imageFile = camara.getImage(camera)
+                    answer = imageFile
+                    utils.myLog(answer)
+                    TelegramBase.send_picture(imageFile, chat_id)
                 update.message.reply_text(answer,parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = user_keyboard_markup)                
             else:
                 update.message.reply_text('echobot: '+update.message.text, reply_markup=user_keyboard_markup)                
