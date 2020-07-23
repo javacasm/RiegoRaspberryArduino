@@ -34,3 +34,8 @@ TimeoutRespuesta = 1
 VELOCIDAD_PUERTO_SERIE = 115200
 ImagesDirectory = './images/'
 
+# chat_id del Admin
+ADMIN_USER = 123123123 
+
+ALLOWED_USERS = [ADMIN_USER]
+
