@@ -26,8 +26,9 @@ import TelegramBase
 import riego
 import arduinoUtils
 import camara
+import raspi
 
-v = '0.9.6'
+v = '0.9.8'
 
 botName = 'riegoBot'
 
@@ -160,7 +161,7 @@ def main():
                 last_picture = now
                 TelegramBase.send_message(message, chat_id)            
             if (now - last_Beat) > 60000: # 60 segundos
-                utils.myLog('BotTest')
+                utils.myLog(botName + ' Test')
                 last_Beat = now
             updateBot(bot)
         except NetworkError:
