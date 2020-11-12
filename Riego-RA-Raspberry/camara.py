@@ -14,14 +14,16 @@ from fractions import Fraction
 import config
 import utils
 
-v = '1.0.4'
+v = '1.0.5'
 
 camera = None
 
 def initCamera():
     global camera
+    utils.myLog('Initting camera')    
     camera = PiCamera() # creamos el objeto camara
-    utils.myLog('Init camara')
+    if camera != None:
+        utils.myLog('Camera Ready!')
     return camera
 
 def resolucionMD():
